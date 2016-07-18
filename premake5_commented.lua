@@ -17,7 +17,7 @@ workspace "HelloWorld"
   --              pass that in without () as well, like with the 'configurations' function below.
 
 
-  -- LUA note: indentation and whitespace is not important in lua. It is just there for cosmetic reasons.
+  -- LUA note: indentation and whitespace is not important in lua. They are used here only to improve readability.
 
   -- defining debug and release configurations (see string token "%{cfg.buildcfg}")
   configurations { "Debug", "Release" }
