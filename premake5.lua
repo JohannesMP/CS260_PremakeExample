@@ -1,46 +1,56 @@
 
 
--- Setting up the workspace.
-workspace "HelloWorld"
-  -- defining debug and release configurations (see string token "%{cfg.buildcfg}")
-  configurations { "Debug", "Release" }
-  -- defining and release configurations (see string token "%{cfg.platform}")
-  platforms { "x64", "x32" }
-
-  local project_action = "UNDEFINED"
+---------------------------------
+-- [ WORKSPACE CONFIGURATION   --
+---------------------------------
+workspace "HelloWorld"                   -- Solution Name
+  configurations { "Debug", "Release" }  -- Optimization/General config mode in VS
+  platforms { "x64", "x32" }             -- Dropdown platforms section in VS
 
   -- _ACTION is the argument passed into premake5 when you run it.
+  local project_action = "UNDEFINED"
+
   if _ACTION ~= nill then
     project_action = _ACTION
   end
 
   -- Where the project files (vs project, solution, etc) go
-  location( "project_" .. project_action )
+  location( "project_" .. project_action)
 
-  -- Setting up the actual project.
+
+  -------------------------------
+  -- [ COMPILER/LINKER CONFIG] --
+  -------------------------------
+
+  flags "FatalWarnings" -- comment if you don't want warnings to count as errors
+  warnings "Extra"
+
+  -- see 'filter' in the wiki pages
+  filter "configurations:Debug"    defines { "DEBUG" }  symbols  "On"
+  filter "configurations:Release"  defines { "NDEBUG" } optimize "On"
+
+  filter { "platforms:*32" } architecture "x86"
+  filter { "platforms:*64" } architecture "x64"
+
+  -- when building any visual studio project
+  filter { "system:windows", "action:vs*"}
+    flags         { "MultiProcessorCompile", "NoMinimalRebuild" }
+    linkoptions   { "/ignore:4099" }      -- Ignore library pdb warnings when running in debug
+  
+  filter { "system:linux", "action:gmake"}
+    buildoptions { "-stdlib=libc++" }     -- linux needs more info
+    linkoptions  { "-stdlib=libc++" }     
+
+  filter {} -- clear filter
+  
+
+  -------------------------------
+  -- [ PROJECT CONFIGURATION ] --
+  ------------------------------- 
   project "HelloWorld"
     kind "ConsoleApp" -- "WindowApp" removes console
-    language "C"
+    language "C++"
     targetdir "bin_%{cfg.buildcfg}_%{cfg.platform}" -- where the output binary goes.
-
-
-    -- COMPILING/LINKING --
-
-    -- flags { "FatalWarnings" } -- uncomment if you want warnings to count as errors
-    warnings "Extra"
-
-    -- see 'filter' in the wiki pages
-    filter "configurations:Debug"    defines { "DEBUG" }  flags { "Symbols" }
-    filter "configurations:Release"  defines { "NDEBUG" } optimize "On"
-
-    filter { "platforms:*32" } architecture "x86"
-    filter { "platforms:*64" } architecture "x64"
-
-    -- when building any visual studio project
-    filter { "system:windows", "action:vs*"}
-      flags         { "MultiProcessorCompile", "NoMinimalRebuild" }
-      linkoptions   { "/ignore:4099" }      -- Ignore library pdb warnings when running in debug
-
 
     filter {} -- clear filter when you know you no longer need it!
 
