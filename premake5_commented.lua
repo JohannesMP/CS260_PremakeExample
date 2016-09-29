@@ -221,16 +221,38 @@ workspace "HelloWorld"
       -- For example if you want to include fmod_123.lib you put "fmod_123" here. Just like when adding to visual studio's linker.
     }
 
-    -- note: for any of these you can call them inside of filters, for example:
-    -- filter { "configurations:Debug" }
-    --    links { "fmod_debug"}
-    --  filter { "configurations:Release" }
-    --    links { "fmod_release"}
-    --    
-    --    this goes for files, libdirs, really any directives.
+    -- Premake Note: for any of these you can call them inside of filters, for example:
+    --        filter { "configurations:Debug" }
+    --           links { "fmod_debug"}
+    --         filter { "configurations:Release" }
+    --           links { "fmod_release"}
+    --           
+    -- This goes for files, libdirs, really any directives.
 
 
 
-
-
-
+-- PREMAKE NOTE: make files
+--        When you run premake5 with the 'gmake' argument you will create several make files:
+--        
+--           - one core make file named the default 'makefile' for the workspace
+--           - one make file for each project, named '<projectname>.make'
+--           
+--        When running 'make', the default makefile is used and will pass arguments to the 
+--        make file of whichever project you select.
+--        
+--        If you run this command:
+--           make help
+--             
+--        You are selecting the 'help' rule in the make file, and will show you all of
+--        the configurations you can build
+--        
+--        For example, to compile in Release for 64 bit you would run:
+--           make config=release_x64
+--          
+--        If you had multiple projects, you could pass the project name in as the target.
+--           make config=<CONFIG> <RELEASE>
+--           
+--        Lastly, a useful tip for debugging makefiles is to set the verbose variable:
+--           make verbose=1
+-- 
+-- 
