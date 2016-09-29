@@ -9,7 +9,6 @@ workspace "HelloWorld"                   -- Solution Name
 
   -- _ACTION is the argument passed into premake5 when you run it.
   local project_action = "UNDEFINED"
-
   if _ACTION ~= nill then
     project_action = _ACTION
   end
@@ -21,7 +20,6 @@ workspace "HelloWorld"                   -- Solution Name
   -------------------------------
   -- [ COMPILER/LINKER CONFIG] --
   -------------------------------
-
   flags "FatalWarnings" -- comment if you don't want warnings to count as errors
   warnings "Extra"
 
@@ -36,12 +34,8 @@ workspace "HelloWorld"                   -- Solution Name
   filter { "system:windows", "action:vs*"}
     flags         { "MultiProcessorCompile", "NoMinimalRebuild" }
     linkoptions   { "/ignore:4099" }      -- Ignore library pdb warnings when running in debug
-  
-  filter { "system:linux", "action:gmake"}
-    buildoptions { "-stdlib=libc++" }     -- linux needs more info
-    linkoptions  { "-stdlib=libc++" }     
 
-  filter {} -- clear filter
+  filter {} -- clear filter when you know you no longer need it!
   
 
   -------------------------------
@@ -52,26 +46,23 @@ workspace "HelloWorld"                   -- Solution Name
     language "C++"
     targetdir "bin_%{cfg.buildcfg}_%{cfg.platform}" -- where the output binary goes.
 
-    filter {} -- clear filter when you know you no longer need it!
 
-
-    -- FILES AND LIBS --
-
+    --------------------------------------
+    -- [ PROJECT FILES CONFIGURATIONS ] --
+    --------------------------------------
     local SourceDir = "./Source/";
     -- what files the visual studio project/makefile/etc should know about
     files
     { 
-      SourceDir .. "**.h", 
-      SourceDir .. "**.c",
-      SourceDir .. "**.hpp", 
-      SourceDir .. "**.cpp",
-      SourceDir .. "**.tpp"
+      SourceDir .. "**.h", SourceDir .. "**.hpp", 
+      SourceDir .. "**.c", SourceDir .. "**.cpp", SourceDir .. "**.tpp",
     }
 
     -- Exclude template files from project (so they don't accidentally get compiled)
     filter { "files:**.tpp" }
       flags {"ExcludeFromBuild"}
 
+    filter {} -- clear filter!
 
     -- setting up visual studio filters (basically virtual folders).
     vpaths 
@@ -80,12 +71,6 @@ workspace "HelloWorld"                   -- Solution Name
       ["Source Files/*"] = { SourceDir .. "**.c", SourceDir .. "**.cxx", SourceDir .. "**.cpp" },
     }
 
-    -- make sure to clear filter when done
-    filter {}
-
-
-
-
     -- where to find header files that you might be including, mainly for library headers.
     includedirs
     {
@@ -93,6 +78,10 @@ workspace "HelloWorld"                   -- Solution Name
       -- include the headers of any libraries/dlls you need
     }
 
+
+    -------------------------------------------
+    -- [ PROJECT DEPENDENCY CONFIGURATIONS ] --
+    -------------------------------------------
     libdirs
     {
       -- add dependency directories here
