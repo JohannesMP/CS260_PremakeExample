@@ -45,6 +45,7 @@ workspace "HelloWorld"                   -- Solution Name
     kind "ConsoleApp" -- "WindowApp" removes console
     language "C++"
     targetdir "bin_%{cfg.buildcfg}_%{cfg.platform}" -- where the output binary goes.
+    targetname "helloworld" -- the name of the executable saved to targetdir
 
 
     --------------------------------------

@@ -126,6 +126,8 @@ workspace "HelloWorld"
     kind "ConsoleApp" -- "WindowApp" removes console
     language "C++"
     targetdir "bin_%{cfg.buildcfg}_%{cfg.platform}" -- Where the output binary goes. This will be generated when we build from the makefile/visual studio project/etc.
+    targetname "helloworld" -- the name of the executable saved to 'targetdir'
+                            -- If left blank will default to the 'project' name
 
     --       The active configuration fills in for the %{cfg.buildcfg} token when used in a string
     --       The active platform fills in for the %{cfg.platform} token when used in a string
